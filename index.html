@@ -6,7 +6,7 @@
   <title>Socmed Agregator</title>
 </head>
 <body>
-  <div>
+  <!-- <div>
     <label for="">Search Lil Twattt</label>
     <input id="inputSearch" type="text" name="Search"><br>
     <label for="">Count</label>
@@ -23,6 +23,25 @@
         </tr>
       </thead>
       <tbody id="tableSearch"></tbody>
+    </table>
+  </div> -->
+
+  <div>
+    <h3>Recent My Lil Twattt</h3>
+    <label for="">Count</label>
+    <input id="countRecent" type="number" name="Count"><br>
+    <button id="recent-twatt" type="submit" name="button">Recent</button>
+    <table>
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Text</th>
+          <th>Retweet count</th>
+          <th>Language</th>
+          <th>Created at</th>
+        </tr>
+      </thead>
+      <tbody id="tableRecent"></tbody>
     </table>
   </div>
 
@@ -50,13 +69,37 @@
             </tr>\
           `);
         })
-        // console.log(temp.data[1].status);
       })
       .catch(function (error) {
         console.log(error);
       });
     });
 
+    $("#recent-twatt").click(function(){
+      let countRecent = $('#countRecent').val()
+      axios.post(`http://localhost:3000/api/recent`, {
+        count: countRecent
+      })
+      .then(function (response) {
+        let tempRecent = response
+        var tbodyElRecent = $('#tableRecent')
+        tbodyElRecent.html('')
+        tempRecent.data.forEach(dataTweet => {
+          tbodyElRecent.append(`\
+            <tr>\
+              <td class="userRecent">${dataTweet.user}</td>\
+              <td class="textRecent">${dataTweet.text}</td>\
+              <td class="retweetCountRecent">${dataTweet.retweet_count}</td>\
+              <td class="languageRecent">${dataTweet.language}</td>\
+              <td class="createdAtRecent">${dataTweet.created_at}</td>\
+            </tr>\
+          `);
+        })
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    });
   });
   </script>
 </body>
