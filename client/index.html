@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <title>Twitter API Aggregation</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-6">
+          <h3>Tweet</h3>
+          <form id="tweet-form" method="post">
+            <div class="form-group">
+              <input type="text" class="form-control" id="status" name="status" placeholder="What's happening?">
+            </div>
+            <button id="new-tweet" type="button" class="btn btn-primary">Tweet</button>
+          </form>
+        </div>
+        <div id="tweet-output" class="col-xs-6">
+          <h3>Result</h3>
+          <ul class="list-group">
+
+          </ul>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-6">
+          <h3>Timeline</h3>
+          <ul id="output" class="list-group">
+
+          </ul>
+          <template id="tweet">
+            <li class="tweet list-group-item">
+              <div>
+                <span class="user"></span>
+              </div>
+              <div>
+                <span class="body"></span>
+              </div>
+              <div class="">
+                <span class="retweet"></span>
+                <span class="favorite"></span>
+              </div>
+            </li>
+          </template>
+        </div>
+
+        <div class="col-xs-6">
+          <h3>Search</h3>
+          <form id="search-form" method="post">
+            <div class="form-group">
+              <input type="text" class="form-control" id="search" name="search" placeholder="Find anything">
+            </div>
+            <button id="find" type="button" class="btn btn-primary">Search</button>
+          </form>
+          <ul id="search-output" class="list-group">
+
+          </ul>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $('#tweet-output').hide()
+        $.ajax({
+          url: 'http://localhost:3000',
+          type: 'GET',
+          success: function(data) {
+            var content = JSON.parse(data);
+
+            for(let i = 0; i < content.length; i++) {
+              var template = $($('#tweet').prop('content')).children().clone()
+              template.find('.body').text(content[i].text);
+              template.find('.user').text('@' + content[i].user.screen_name);
+              template.find('.favorite').text('RT ' + content[i].favorite_count);
+              template.find('.retweet').text('Fav ' + content[i].retweet_count);
+
+              $('#output').append(template)
+            }
+          },
+          fail: function() {
+            console.log('Error')
+          }
+        })
+        $('#find').click(function(event) {
+          $('#search-output').empty()
+          let query = $('#search').val()
+          console.log(query)
+          axios.post('http://localhost:3000/search', {
+            search: query
+          })
+          .then(function (response) {
+            var content = response.data.statuses;
+
+            for(let i = 0; i < content.length; i++) {
+              var template = $($('#tweet').prop('content')).children().clone()
+              template.find('.body').text(content[i].text);
+              template.find('.user').text('@' + content[i].user.screen_name);
+              template.find('.favorite').text('RT ' + content[i].favorite_count);
+              template.find('.retweet').text('Fav ' + content[i].retweet_count);
+
+              $('#search-output').append(template)
+            }
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+        })
+
+        $('#new-tweet').click(function(event) {
+          $('#tweet-output').hide()
+          let query = $('#status').val()
+          axios.post('http://localhost:3000/post', {
+            status: query
+          })
+          .then(function (response) {
+            $('#tweet-output').show()
+            var content = response.data;
+
+            var template = $($('#tweet').prop('content')).children().clone()
+            template.find('.body').text(content.text);
+            template.find('.user').text('@' + content.user.screen_name);
+            template.find('.favorite').text('RT ' + content.favorite_count);
+            template.find('.retweet').text('Fav ' + content.retweet_count);
+
+            $('#tweet-output').append(template)
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+        })
+
+      })
+
+    </script>
+  </body>
+</html>

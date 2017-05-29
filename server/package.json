@@ -1,0 +1,27 @@
+{
+  "name": "socmed-aggregator",
+  "version": "1.0.0",
+  "description": "aggregation of twitter api",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hakiemaul/socmed-aggregator/"
+  },
+  "keywords": [
+    "api",
+    "ajax",
+    "jquery"
+  ],
+  "author": "hakiemaul",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "cors": "^2.8.3",
+    "dotenv": "^4.0.0",
+    "express": "^4.15.3",
+    "oauth": "^0.9.15"
+  }
+}
