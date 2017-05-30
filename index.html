@@ -5,32 +5,64 @@
     <title>Socmed Aggregator</title>
     <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- <link rel="stylesheet" href="https://cdnjs.com/libraries/bulma">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> -->
   </head>
   <body>
 
-    <div class="grid">
-      <div class="text-wrapper">
-        <fieldset>
-          <h1>Post Tweet</h1>
-          <textarea class="twitt" rows="8" cols="80"></textarea><br>
+
+
+  <div class="grid">
+
+    <div class="items-one">
+      <div class="items-color">
+        <fieldset class="items-one">
+          <h2>Tweet</h2>
+          <textarea class="twitt" rows="4" cols="40"></textarea><br>
           <button type="submit" class="submit-btn">POST</button>
+        </fieldset>
+      </div>
+
+      <div class="items-color">
+        <fieldset class="items-one">
+          <h2>Recent Tweet</h2>
+          <button type="submit" class="recent-btn">FIND YOUR RECENT HERE!</button>
+        </fieldset>
+      </div>
+
+    </div>
+
+    <div class="items">
+      <div class="items-color">
+        <fieldset>
+          <h1>TIMELINE</h1>
+          <table border="1">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>User</th>
+                <th>Tweet</th>
+              </tr>
+            </thead>
+            <tbody id="timeline">
+
+            </tbody>
+          </table>
         </fieldset>
       </div>
     </div>
 
-    <div class="grid">
-      <table>
-        <p id="post-tweet"></p>
-      </table>
-    </div>
+  </div>
+
 
   <script type="text/javascript">
   $( document ).ready(function() {
     $('.submit-btn').click(function() {
-      var tes =  $('.twitt').val()
+      var text =  $('.twitt').val()
         console.log(tes);
         axios.post('http://localhost:3000/api/twitt', {
-            twitt : tes
+            twitt : text
         })
 
         .then(function (response) {
@@ -40,7 +72,24 @@
           console.log(error);
         });
     })
+
+
   });
+
+  $('.recent-btn').click(function() {
+    axios.get('http://localhost:3000/timeline')
+    .then(function (response) {
+      console.log(JSON.stringify(response));
+      $('#timeline').empty();
+      for (var i = 0; i < response.data.length; i++) {
+        $('#timeline').append(`<tr><td>${i+1}</td><td>${response.data[i].user.name}</td><td>${response.data[i].text}</td></tr>`);
+      }
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  })
+
 
 
   </script>
