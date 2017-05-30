@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <title>Socmed Agregator</title>
+</head>
+<body>
+  <div>
+    <h3>Recent Twitt</h3>
+    <label for="">Username</label>
+    <input id="username" type="text" name="Username"><br>
+    <label for="">Count</label>
+    <input id="count" type="number" name="Count"><br>
+    <button id="recent-twatt" type="submit" name="button">Recent</button>
+    <table>
+      <thead>
+        <tr>
+          <th>Text</th>
+          <th>Retweet count</th>
+          <th>Created at</th>
+        </tr>
+      </thead>
+      <tbody id="tableRecent"></tbody>
+    </table>
+  </div>
+
+  <script>
+  $(document).ready(function(){
+    $("#recent-twatt").click(function(){
+      let username = $('#username').val()
+      let count = $('#count').val()
+      axios.post(`http://localhost:3000/api/twitter`, {
+        count: count,
+        user : username
+      })
+      .then(function (response) {
+        let tempRecent = response
+        var tableRecent = $('#tableRecent')
+        tableRecent.html('')
+        tempRecent.data.forEach(dataTweet => {
+          tableRecent.append(`\
+            <tr>\
+              <td class="textRecent">${dataTweet.text}</td>\
+              <td class="retweetCountRecent">${dataTweet.retweet_count}</td>\
+              <td class="createdAtRecent">${dataTweet.created_at}</td>\
+            </tr>\
+          `);
+        })
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    });
+  });
+  </script>
+</body>
+</html>
