@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Social Media Aggregator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col s12 m6 push-m3">
+          <h1>Simple Tweet API</h1>
+          <br/><br/>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <form action="/newStatus" method="post" class="col s12">
+          <div class="input-field col s12 m6 push-m3">
+            <input id="new-tweet" type="text" placeholder="What's happening?">
+            <button id="tweet-it" class="btn-large waves-effect waves-light right light-blue lighten-1" type="button"><i class="material-icons left">mode_edit</i>Tweet</button>
+          </div>
+        </form>
+      </div>
+      <br/>
+      <div id="newTweet" class="row">
+      </div>
+      <br><br>
+      <div class="row">
+        <div class="col s12 center">
+          <a id="refresh-twit" href="" class="btn-large waves-effect waves-light cyan"><i class="material-icons left">loop</i>Refresh</a>
+        </div>
+      </div>
+      <br><br>
+      <div class="row">
+        <div class="col s12 m6 center">
+          <form id="search-form" action="" method="post">
+            <div class="input-field inline">
+              <input id="searchTweets" type="text" name="search" placeholder="Search">
+            </div>
+            <button id="search-tweet" type="button" class="btn-floating waves-effect waves-light"><i class="large material-icons">search</i></button>
+          </form>
+          <div>
+          <ul class="collection" id="search-list">
+          </ul>
+            <!--<a class="twitter-timeline"  href="https://twitter.com/hashtag/javascript" data-widget-id="869312479091806209" data-height="600px" data-width="400px">#javascript Tweets</a>-->
+          </div>
+        </div>
+        <div class="col s12 m6 center">
+          <a class="twitter-follow-button" href="https://twitter.com/ingelieur" data-size="large" data-show-count="false">Follow @ingelieur</a>
+          <ul class="collection" id="tweet-list">
+          </ul>
+          <template id=tweets>
+            <li class="collection-item avatar" id="tweet-item">
+              <img class="tweet-avatar circle" src="" alt="">
+              <span class="title username"></span>
+              <p class="tweet-content"></p>
+            </li>
+          </template>
+          <!--<a class="twitter-timeline" href="https://twitter.com/ingelieur" data-height="600px" data-width="400px">Recent Timeline</a>-->
+        </div>
+      </div>
+    </div>
+    <script id="twitter-wjs" type="text/javascript" async defer src="//platform.twitter.com/widgets.js"></script>
+    <script type="text/javascript" src="./script.js"></script>
+  </body>
+</html>
