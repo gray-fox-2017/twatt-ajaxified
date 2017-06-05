@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Social Media Aggregator</title>
+    <script src="https://unpkg.com/vue@2.3.3"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" type="text/javascript"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
+  </head>
+  <body>
+    <section class="container" id="twitApp">
+      <h2>Social Media Aggregator</h2>
+      <input type="text" id="keyword" value="" placeholder="fill this to make a status / search request">
+      <!-- <form> -->
+        <button v-on:click=postTweet class="btn">Post Status</button>
+        <button class="btn btn-search" v-on:click=getSearch>Search</button>
+        <button class="btn" v-on:click="getRTwat">Refresh Timeline</button>
+      <!-- </form> -->
+      <h3 id="h3action"></h3>
+      <!-- <input type="hidden" v-bind:value="action" onchange="changeAction()" id="txt_action"> -->
+
+      <div class="divider"></div>
+      <div v>
+        <div class="card horizontal row" v-for="stat in twatters">
+          <div class="card-image col s1" :style="{ backgroundImage: 'url(' + stat.user.profile_image_url + ')' }"></div>
+          <div class="card-stacked col s5">
+            <div class="card-content">{{stat.text}}</div>
+            <div class="card-action">{{stat.created_at}}</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <style>
+      .card-image{
+        background-size:cover;
+      }
+    </style>
+    <script>
+      const changeAction = (action) => {
+        $('#h3action').text(action);
+      }
+      const twitApp = new Vue({
+        el: '#twitApp',
+        data: {
+          twatters: []
+        },
+        created: function() {},
+        methods: {
+          getRTwat : function() {
+            let _self = this
+            axios.get('http://localhost:3000/twitter/new')
+            .then( res => {
+              if (typeof res.data === 'undefined' || res.data.error) _self.twatters = [];
+              else _self.twatters = res.data;
+              changeAction('Timeline');
+            })
+            .catch( err => {
+              console.log(err)
+            });
+          },
+          getSearch: function () {
+            let _self = this;
+            let keyword = $('#keyword').val().trim();
+            if (keyword !== '') {
+              axios.post('http://localhost:3000/twitter/search', {keyword:keyword})
+              .then( res => {
+                if (typeof res.data === 'undefined' || res.data.error || typeof res.data.statuses === 'undefined') _self.twatters = [];
+                else _self.twatters = res.data.statuses;
+                changeAction('Search');
+              })
+              .catch( err => console.log(err));
+            } else alert('Keyword must be filled')
+
+
+          },
+          postTweet: function () {
+            let _self = this;
+            _self.twatters = [];
+
+            let keyword = $('#keyword').val().trim();
+            if (keyword !== '') {
+              axios.post('http://localhost:3000/twitter/posting', {keyword:keyword})
+              .then( res => {
+                if (typeof res.data === 'undefined' || res.data.error) _self.twatters = [];
+                else _self.twatters[0] = res.data;
+                changeAction('Post');
+              })
+              .catch( err => console.log(err));
+            } else alert('Keyword must be filled')
+          }
+        }
+      })
+    </script>
+  </body>
+</html>
+
